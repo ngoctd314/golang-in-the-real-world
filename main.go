@@ -1,18 +1,15 @@
 package main
 
-import (
-	"fmt"
-)
-
-const (
-	X float32 = 3.14
-	Y         // here must be one identifier
-	Z         // here must be one identifier
-
-	A, B = "Go", "language"
-	C, _
-)
+type person struct {
+	name string
+}
 
 func main() {
-	fmt.Println(X, Y, Z, A, B, C)
+	m := make(map[int]person)
+	m[0] = person{
+		name: "TDN",
+	}
+	// m[0].name = "ABC" // viet tat
+	a := m[0]
+	a.name = "ABC"
 }
