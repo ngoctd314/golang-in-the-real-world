@@ -3,7 +3,7 @@
 
 - Với vai trò lập trình viên. Nếu bên anh đang cần tìm một bạn luôn muốn tìm cách để structure và relationship ngày một tốt hơn thì đó là em 
 - Em thấy mình là người có khả năng problem solving. Ví dụ ...
-- Em tự tin và em luôn học hỏi với tâm thế tôi không biết gì cả, em thấy nhiều người bạn xung quanh em, họ rất khó để nói ra là họ không biết
+- Em tự tin và em luôn học hỏi với tâm thế tôi không biết gì cả
   
 **Điểm yếu**
 
