@@ -1,71 +1,80 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
+	"log"
 )
 
-type Saver interface {
-	Save(data []byte) error
-}
+type gender int8
 
-func SavePerson(person *Person, saver Saver) error {
-	// validate input
-	err := person.validate()
-	if err != nil {
-		return err
+// enum for gender
+const (
+	MALE gender = iota
+	FEMALE
+	OTHER
+)
+
+type person struct {
+	age      int
+	name     string
+	location int
+	gender   gender
+}
+type filterPersonFunc func(person) bool
+
+func filterPeople(people []person, filters ...filterPersonFunc) []person {
+	result := make([]person, 0)
+	matchAllFilter := func(person person, filters ...filterPersonFunc) bool {
+		for _, fitler := range filters {
+			if !fitler(person) {
+				return false
+			}
+		}
+		return true
 	}
 
-	// encode person to bytes
-	bytes, err := person.encode()
-	if err != nil {
-		return err
+	for _, person := range people {
+		if matchAllFilter(person, filters...) {
+			result = append(result, person)
+		}
 	}
 
-	// save the person and return the result
-	return saver.Save(bytes)
+	return result
 }
 
-type Person struct {
-	Name  string
-	Phone string
-}
-
-func (p *Person) validate() error {
-	if p.Name == "" {
-		return errors.New("name missing")
+func withPersonFilterByEqualAge(age int) filterPersonFunc {
+	return func(p person) bool {
+		return p.age == age
 	}
-	if p.Phone == "" {
-		return errors.New("phone missing")
-	}
-
-	return nil
 }
-func (p *Person) encode() ([]byte, error) {
-	return json.Marshal(p)
-}
-
-func LoadPerson(ID int, decodePerson func(data []byte) *Person) (*Person, error) {
-	// validate the input
-	if ID <= 0 {
-		return nil, fmt.Errorf("invalid ID '%d' supplied", ID)
+func withPersonFilterByGreaterThanAge(age int) filterPersonFunc {
+	return func(p person) bool {
+		return p.age > age
 	}
-
-	// load from storage
-	bytes, err := loadPerson(ID)
-	if err != nil {
-		return nil, err
-	}
-
-	// decode bytes and return
-
-	return decodePerson(bytes), nil
 }
-func loadPerson(ID int) ([]byte, error) {
-	return nil, errors.New("not implementd")
+func withPersonFilterByLocation(location int) filterPersonFunc {
+	return func(p person) bool {
+		return p.location == location
+	}
 }
 
 func main() {
+	people := []person{
+		{
+			age:      23,
+			name:     "NgocTD",
+			location: 18,
+			gender:   MALE,
+		},
+		{
+			age:      18,
+			name:     "Her",
+			location: 18,
+			gender:   FEMALE,
+		},
+	}
 
+	log.Println(filterPeople(people, withPersonFilterByEqualAge(18)))
+	log.Println(filterPeople(people, withPersonFilterByGreaterThanAge(18)))
+	log.Println(filterPeople(people, withPersonFilterByLocation(18)))
+	log.Println(filterPeople(people, withPersonFilterByEqualAge(18), withPersonFilterByLocation(18)))
 }
